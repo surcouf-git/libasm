@@ -1,0 +1,4 @@
+Bien verifier le type de retour
+Verifier errno
+En faire une librarie
+Main C ou ASM ?
