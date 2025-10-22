@@ -18,6 +18,6 @@ section .text
 			sub al, [rsi + rcx]
 			movsx eax, al
 			ret
-		
+
 		.done:
 			ret
