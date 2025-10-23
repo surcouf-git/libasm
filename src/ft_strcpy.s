@@ -6,14 +6,14 @@ section .text
 		xor rcx, rcx
 
 		.null_check:
-			test rsi, rsi
+			cmp rsi, 0
 			jz .null_ret
 
 		.loop:
+			mov al, [rsi + rcx]
+			mov [rdi + rcx], al
 			cmp byte [rsi + rcx], 0
 			je .done
-			mov rdx, byte [rsi + rcx]
-			mov byte [rdi + rcx], rdx
 			inc rcx
 			jmp .loop
 
@@ -22,6 +22,7 @@ section .text
 			jmp .done
 
 		.done:
+			mov rax, rdi
 			ret
 
 ; section .note.GNU-stack noalloc noexec nowrite progbits

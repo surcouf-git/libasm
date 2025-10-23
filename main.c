@@ -4,12 +4,13 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <string.h>
+#include <stdlib.h>
 
 extern size_t ft_strlen(const char *s);
 
 char *ft_strcpy(char *restrict dst, const char *restrict src);
 
-// extern int ft_strcmp(const char *s1, const char *s2);
+extern int ft_strcmp(const char *s1, const char *s2);
 
 extern ssize_t ft_read(int fd, void *buf, size_t count);
 
@@ -104,7 +105,7 @@ void	strlen_call(void) {
 
 void strcpy_call(void) {
 	char *nul_buf = NULL, *ptr = NULL;
-	char empty_buf[10] = {};
+	char empty_buf[1024] = {};
 	char buf[10] = "hello !]\n";
 	
 
@@ -118,13 +119,94 @@ void strcpy_call(void) {
 
 	printf("\n\n-----\n\n");
 
-	printf("testing strcpy with null buf as first params:\n\n");
+	// printf("testing strcpy with null buf as first param:\n\n");
+	// ptr = strcpy(nul_buf, empty_buf);
+	// printf("strcpy: ptr = [%p] | content = [%s]\n", ptr, ptr); // should segfault
+	// ptr = NULL;
+	// ptr = ft_strcpy(nul_buf, empty_buf);
+	// printf("ft_strcpy: ptr = [%p] | content = [%s]\n", ptr, ptr);
 
-	ptr = strcpy(nul_buf, empty_buf);
-	printf("strcpy: ptr = [%p] | content = [%s]\n", ptr, ptr);
+	printf("testing strcpy with null buf as second param:\n\n");
+	memset(empty_buf, 0, 1024);
+	ptr = strcpy(empty_buf, nul_buf);
+	printf("strcpy: ptr = [%p] | content = [%s]\n", ptr, ptr);  // should segfault ?????????
 	ptr = NULL;
-	ptr = ft_strcpy(nul_buf, empty_buf);
+	memset(empty_buf, 0, 1024);
+	ptr = ft_strcpy(empty_buf, nul_buf);
 	printf("ft_strcpy: ptr = [%p] | content = [%s]\n", ptr, ptr);
+
+	printf("testing strcpy with normal params:\n\n");
+	memset(empty_buf, 0, 1024);
+	ptr = strcpy(empty_buf, buf);
+	printf("strcpy: ptr = [%p] | content = [%s\n", ptr, ptr);
+	ptr = NULL;
+	memset(empty_buf, 0, 1024);
+	ptr = ft_strcpy(empty_buf, buf);
+	printf("ft_strcpy: ptr = [%p] | content = [%s\n", ptr, ptr);
+
+	print_line();
+}
+
+void strcmp_call(void) {
+	char *nul_buf = NULL;
+	char empty_buf[10] = {};
+	char buf1[20] = "hello";
+	char buf2[20] = "hello";
+	char buf3[20] = "world";
+	int rcmp = 0;
+	int ft_rcmp = 0;
+
+	print_line();
+
+	printf("testing strcmp with null buf as both params:\n\n");
+	rcmp = strcmp(nul_buf, nul_buf);
+	printf("strcmp: %d\n", rcmp);
+	ft_rcmp = ft_strcmp(nul_buf, nul_buf);
+	printf("ft_strcmp: %d\n", ft_rcmp);
+
+	printf("\n\n-----\n\n");
+
+	// printf("testing strcmp with null buf as first param:\n\n");
+	// rcmp = strcmp(nul_buf, buf1); // should segfault
+	// printf("strcmp: %d\n", rcmp);
+	// ft_rcmp = ft_strcmp(nul_buf, buf1);
+	// printf("ft_strcmp: %d\n", ft_rcmp);
+
+	// printf("\n\n-----\n\n");
+
+	printf("testing strcmp with null buf as second param:\n\n");
+	// rcmp = strcmp(buf1, nul_buf); // should segfault
+	// printf("strcmp: %d\n", rcmp);
+	ft_rcmp = ft_strcmp(buf1, nul_buf);
+	printf("ft_strcmp: %d\n", ft_rcmp);
+
+	printf("testing strcmp with empty strings:\n\n");
+	errno = 0;
+	rcmp = strcmp(empty_buf, empty_buf);
+	printf("strcmp: %d (errno = %d)\n", rcmp, errno);
+	errno = 0;
+	ft_rcmp = ft_strcmp(empty_buf, empty_buf);
+	printf("ft_strcmp: %d (errno = %d)\n", ft_rcmp, errno);
+
+	printf("\n\n-----\n\n");
+
+	printf("testing strcmp with equal strings:\n\n");
+	errno = 0;
+	rcmp = strcmp(buf1, buf2);
+	printf("strcmp: %d (errno = %d)\n", rcmp, errno);
+	errno = 0;
+	ft_rcmp = ft_strcmp(buf1, buf2);
+	printf("ft_strcmp: %d (errno = %d)\n", ft_rcmp, errno);
+
+	printf("\n\n-----\n\n");
+
+	printf("testing strcmp with different strings:\n\n");
+	errno = 0;
+	rcmp = strcmp(buf1, buf3);
+	printf("strcmp: %d (errno = %d)\n", rcmp, errno);
+	errno = 0;
+	ft_rcmp = ft_strcmp(buf1, buf3);
+	printf("ft_strcmp: %d (errno = %d)\n", ft_rcmp, errno);
 
 	print_line();
 }
@@ -132,8 +214,9 @@ void strcpy_call(void) {
 int main () {
 	// char src[] = "Salut ca vA", dst[] = "Salut ca va";
 
-	// strlen_call();
+	strlen_call();
 	strcpy_call();
-	// read_call();
+	strcmp_call();
+	read_call();
 	return (0);
 }

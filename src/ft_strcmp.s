@@ -1,10 +1,17 @@
 bits 64
-
 global ft_strcmp
-
 section .text
+
 	ft_strcmp: ; int ft_strcmp(const char *s1, const char *s2)
 		xor rcx, rcx
+		xor eax, eax
+
+		.null_check:
+			test rdi, rdi
+			jz .done
+			test rsi, rsi
+			jz .done
+
 		.loop:
 			mov al, [rdi + rcx]
 			cmp al, [rsi + rcx]
