@@ -26,7 +26,7 @@ ft_list_push_front:
 		mov [rdi], rax
 		mov qword [rax + t_list.next], 0
 		mov rdx, [rdi]
-		mov [rdx + t_list.data], rsi
+		mov qword [rdx + t_list.data], rsi
 		jmp .done
 
 	.add_new_node:
