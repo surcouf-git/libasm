@@ -6,17 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-extern size_t ft_strlen(const char *s);
-
-char *ft_strcpy(char *restrict dst, const char *restrict src);
-
-extern int ft_strcmp(const char *s1, const char *s2);
-
-extern ssize_t ft_read(int fd, void *buf, size_t count);
-
-// extern char *ft_strdup(const char *s1);
-
-// extern ssize_t ft_write(int fd, const void *buf, size_t count);
+#include "libasm.h"
 
 void print_line() {
 	for (int i = 0; i < 50; i++) {
@@ -28,8 +18,6 @@ void print_line() {
 void	read_call(void) {
 	char buf[1024] = {};
 
-	print_line();
-
 	printf("testing read with invalid fd:\n\n");
 	errno = 0;
 	int rd = read(-1, buf, 1023);
@@ -39,7 +27,7 @@ void	read_call(void) {
 	printf("ft_read: %d (errno = %d)\n\n-----\n\n", ft_rd, errno);
 
 	errno = 0;
-	int file_fd = open("./read_file.txt", O_RDONLY);
+	int file_fd = open("./files/read_file.txt", O_RDONLY);
 	if (file_fd > 0) {
 		printf("testing read with valid fd:\n\n");
 		int rd = read(file_fd, buf, 1023);
@@ -67,6 +55,8 @@ void	read_call(void) {
 	ft_rd = ft_read(0, buf, 1023);
 	printf("\nft_read: %d (errno = %d) content -> [%s]\n", ft_rd, errno, buf);
 	printf("\n\n");
+
+	print_line();
 }
 
 void	strlen_call(void) {
@@ -126,14 +116,14 @@ void strcpy_call(void) {
 	// ptr = ft_strcpy(nul_buf, empty_buf);
 	// printf("ft_strcpy: ptr = [%p] | content = [%s]\n", ptr, ptr);
 
-	printf("testing strcpy with null buf as second param:\n\n");
-	memset(empty_buf, 0, 1024);
-	ptr = strcpy(empty_buf, nul_buf);
-	printf("strcpy: ptr = [%p] | content = [%s]\n", ptr, ptr);  // should segfault ?????????
-	ptr = NULL;
-	memset(empty_buf, 0, 1024);
-	ptr = ft_strcpy(empty_buf, nul_buf);
-	printf("ft_strcpy: ptr = [%p] | content = [%s]\n", ptr, ptr);
+	// printf("testing strcpy with null buf as second param:\n\n");
+	// memset(empty_buf, 0, 1024);
+	// ptr = strcpy(empty_buf, nul_buf);
+	// printf("strcpy: ptr = [%p] | content = [%s]\n", ptr, ptr);
+	// ptr = NULL;
+	// memset(empty_buf, 0, 1024);
+	// ptr = ft_strcpy(empty_buf, nul_buf);
+	// printf("ft_strcpy: ptr = [%p] | content = [%s]\n", ptr, ptr);
 
 	printf("testing strcpy with normal params:\n\n");
 	memset(empty_buf, 0, 1024);
@@ -156,8 +146,6 @@ void strcmp_call(void) {
 	int rcmp = 0;
 	int ft_rcmp = 0;
 
-	print_line();
-
 	printf("testing strcmp with null buf as both params:\n\n");
 	rcmp = strcmp(nul_buf, nul_buf);
 	printf("strcmp: %d\n", rcmp);
@@ -171,52 +159,125 @@ void strcmp_call(void) {
 	// printf("strcmp: %d\n", rcmp);
 	// ft_rcmp = ft_strcmp(nul_buf, buf1);
 	// printf("ft_strcmp: %d\n", ft_rcmp);
-
 	// printf("\n\n-----\n\n");
 
-	printf("testing strcmp with null buf as second param:\n\n");
+	// printf("testing strcmp with null buf as second param:\n\n");
 	// rcmp = strcmp(buf1, nul_buf); // should segfault
 	// printf("strcmp: %d\n", rcmp);
-	ft_rcmp = ft_strcmp(buf1, nul_buf);
-	printf("ft_strcmp: %d\n", ft_rcmp);
+	// ft_rcmp = ft_strcmp(buf1, nul_buf);
+	// printf("ft_strcmp: %d\n", ft_rcmp);
 
 	printf("testing strcmp with empty strings:\n\n");
-	errno = 0;
 	rcmp = strcmp(empty_buf, empty_buf);
-	printf("strcmp: %d (errno = %d)\n", rcmp, errno);
-	errno = 0;
+	printf("strcmp: %d\n", rcmp);
 	ft_rcmp = ft_strcmp(empty_buf, empty_buf);
-	printf("ft_strcmp: %d (errno = %d)\n", ft_rcmp, errno);
-
+	printf("ft_strcmp: %d\n", ft_rcmp);
 	printf("\n\n-----\n\n");
 
 	printf("testing strcmp with equal strings:\n\n");
-	errno = 0;
 	rcmp = strcmp(buf1, buf2);
-	printf("strcmp: %d (errno = %d)\n", rcmp, errno);
-	errno = 0;
+	printf("strcmp: %d\n", rcmp);
 	ft_rcmp = ft_strcmp(buf1, buf2);
-	printf("ft_strcmp: %d (errno = %d)\n", ft_rcmp, errno);
-
+	printf("ft_strcmp: %d\n", ft_rcmp);
 	printf("\n\n-----\n\n");
 
 	printf("testing strcmp with different strings:\n\n");
-	errno = 0;
 	rcmp = strcmp(buf1, buf3);
-	printf("strcmp: %d (errno = %d)\n", rcmp, errno);
-	errno = 0;
+	printf("strcmp: %d\n", rcmp);
 	ft_rcmp = ft_strcmp(buf1, buf3);
-	printf("ft_strcmp: %d (errno = %d)\n", ft_rcmp, errno);
+	printf("ft_strcmp: %d\n", ft_rcmp);
 
 	print_line();
 }
 
-int main () {
-	// char src[] = "Salut ca vA", dst[] = "Salut ca va";
+void	write_call(void) {
+	char buf[1024] = "Hello from write test\n";
+	int wr, ft_wr;
 
+	printf("testing write with invalid fd:\n\n");
+	errno = 0;
+	wr = write(-1, buf, strlen(buf));
+	printf("write: %d (errno = %d)\n", wr, errno);
+	errno = 0;
+	ft_wr = ft_write(-1, buf, strlen(buf));
+	printf("ft_write: %d (errno = %d)\n\n-----\n\n", ft_wr, errno);
+
+	printf("testing write with valid fd (stdout):\n\n");
+	errno = 0;
+	wr = write(1, buf, strlen(buf));
+	printf("write: %d (errno = %d)\n", wr, errno);
+	errno = 0;
+	ft_wr = ft_write(1, buf, strlen(buf));
+	printf("ft_write: %d (errno = %d)\n\n-----\n\n", ft_wr, errno);
+
+	printf("testing write with file:\n\n");
+	errno = 0;
+	int file_fd = open("./files/write_file.txt", O_WRONLY);
+	if (file_fd > 0) {
+		wr = write(file_fd, buf, strlen(buf));
+		printf("write: %d (errno = %d)\n", wr, errno);
+		errno = 0;
+		ft_wr = ft_write(file_fd, buf, strlen(buf));
+		printf("ft_write: %d (errno = %d)\n", ft_wr, errno);
+		close(file_fd);
+	} else
+		printf("Cannot exec test 3 -> open file for write (%s)\n", strerror(errno));
+
+	printf("\n\n-----\n\ntesting write with zero-length:\n\n");
+	errno = 0;
+	wr = write(1, "", 0);
+	printf("write: %d (errno = %d)\n", wr, errno);
+	errno = 0;
+	ft_wr = ft_write(1, "", 0);
+	printf("ft_write: %d (errno = %d)\n", ft_wr, errno);
+	printf("\n\n");
+
+	print_line();
+}
+
+void	strdup_call(void) {
+	char *s = "Hello from strdup test";
+	char *dup;
+	char *ft_dup;
+
+	printf("testing strdup with valid string:\n\n");
+	errno = 0;
+	dup = strdup(s);
+	printf("strdup: [%s] (errno = %d)\n", dup, errno);
+	free(dup);
+	errno = 0;
+	ft_dup = ft_strdup(s);
+	printf("ft_strdup: [%s] (errno = %d)\n\n-----\n\n", ft_dup, errno);
+	free(ft_dup);
+
+	printf("testing strdup with empty string:\n\n");
+	errno = 0;
+	ft_dup = ft_strdup("");
+	printf("ft_strdup: [%s] (errno = %d)\n\n-----\n\n", ft_dup, errno);
+	free(ft_dup);
+	errno = 0;
+	dup = strdup("");
+	printf("strdup: [%s] (errno = %d)\n", dup, errno);
+	free(dup);
+
+	// printf("testing strdup with NULL pointer (should segfault):\n\n");
+	// errno = 0;
+	// dup = NULL;
+	// dup = strdup(dup);
+	// printf("strdup: %p (errno = %d)\n\n", dup, errno); //should segfault
+	// errno = 0;
+	// ft_dup = NULL;
+	// ft_dup = ft_strdup(ft_dup);
+	// printf("ft_strdup: %p (errno = %d)\n\n", ft_dup, errno);
+	// free(ft_dup);
+}
+
+int main () {
 	strlen_call();
 	strcpy_call();
 	strcmp_call();
+	write_call();
 	read_call();
+	strdup_call();
 	return (0);
 }
