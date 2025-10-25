@@ -1,5 +1,5 @@
 bits 64
-%include 'struct.s'
+%include "header/bonus/struct.s"
 extern malloc
 extern __errno_location
 global ft_list_push_front
@@ -10,33 +10,36 @@ ft_list_push_front:
 
 	.create_new_node:
 		push rdi
+		push rsi
+		push rdx
 		mov rdi, t_list_size
 		call malloc wrt ..plt
+		pop rdx
+		pop rsi
 		pop rdi
 		test rax, rax
 		jz .set_errno
+		mov qword [rax + t_list.data], rsi
 
-	.check_list:
+	.check_head:
 		mov rdx, [rdi]
 		test rdx, rdx
 		jz .head_is_null
 		jmp .add_new_node
 
 	.head_is_null:
-		mov [rdi], rax
 		mov qword [rax + t_list.next], 0
-		mov rdx, [rdi]
-		mov qword [rdx + t_list.data], rsi
+		mov [rdi], rax
 		jmp .done
 
 	.add_new_node:
-		mov rdx, [rdi]
-		mov [rdx + t_list.data], rsi
+		mov qword [rdi], rax
+		mov qword [rax + t_list.next], rdx
 		jmp .done
 
 	.set_errno:
 		call __errno_location wrt ..plt
-		mov qword [rax], 12
+		mov dword [rax], 12
 		jmp .done
 
 	.done:

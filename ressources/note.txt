@@ -1,6 +1,0 @@
-Bien verifier le type de retour
-Verifier errno
-En faire une librarie
-Main C ou ASM ?
-Se renseigner sur l'alignement de la pile
-Global c'est quoi, pourquoi le mettre ?

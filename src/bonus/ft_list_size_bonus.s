@@ -1,9 +1,6 @@
 bits 64
-
-%include 'struct.s'
-
+%include "header/bonus/struct.s"
 global ft_list_size
-
 section .text
 ft_list_size: ; int ft_list_size(t_list *begin_list);
 	xor eax, eax
